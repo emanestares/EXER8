@@ -11,6 +11,7 @@ import random
 
 attributeList = []
 vectorList = []
+vectors = []
 isFirstLine = True
 
 def inputNumbers(char):
@@ -28,44 +29,68 @@ def run():
     minDistance = 0
     distance = 0
     centroid = 0
+    x = 0
+    y = 0
 
     if attr1Index == attr2Index:
         print("Attributes 1 and 2 cannot be the same")
         return 0
 
     for i in range(0, int(nClusters)):
-        centroid = vectorList[random.randint(0, len(vectorList))]
+        centroid = vectorList[random.randint(0, len(vectorList))][0]
         currentCentroids.append([float(centroid[attr1Index]), float(centroid[attr2Index])])
+        previousCentroids.append(0)
     
-    for vector in vectorList:
-        clusterIndex = 0
-        minDistance = 0
-        distance = 0
-        index = 0
-        isFirstCentroid = True
-        for centroid in currentCentroids:
-            distance = (float(vector[attr1Index]) - float(centroid[0]))**2
-            distance += ((float(vector[attr2Index]) - float(centroid[1])))**2
-            distance = math.sqrt(distance)
+    while previousCentroids != currentCentroids:
+        for vector in vectorList:
+            clusterIndex = 0
+            minDistance = 0
+            distance = 0
+            index = 0
+            isFirstCentroid = True
+            for centroid in currentCentroids:
+                distance = (float(vector[0][attr1Index]) - float(centroid[0]))**2
+                distance += ((float(vector[0][attr2Index]) - float(centroid[1])))**2
+                distance = math.sqrt(distance)
 
-            if isFirstCentroid:
-                minDistance = distance
-                isFirstCentroid = False
+                if isFirstCentroid:
+                    minDistance = distance
+                    isFirstCentroid = False
 
-            if distance < minDistance:
-                minDistance = distance
-                clusterIndex = index
-            index +=1
-        print(vector, clusterIndex)
-      
+                if distance < minDistance:
+                    minDistance = distance
+                    clusterIndex = index
+                index +=1
+            vector[1] = clusterIndex
+
+        for i in range(0, int(nClusters)):
+            index = 0
+            x = 0
+            y = 0
+            for vector in vectorList:
+                if i == vector[1]:
+                    x += float(vector[0][attr1Index])
+                    y += float(vector[0][attr2Index])
+                    index +=1
+            x = x/ index
+            y = y/ index
+
+            previousCentroids[i] = currentCentroids[i]
+            currentCentroids[i] = [x, y]
+
+    print(currentCentroids)
+
 
 inputFile = open("wine.csv", "r")
 for line in inputFile:
+    vectors = []
     if isFirstLine:
         attributeList = line[:-1].split(",")
         isFirstLine = False
     else:
-        vectorList.append(line[:-1].split(","))
+        vectors.append(line[:-1].split(","))
+        vectors.append(0)
+        vectorList.append(vectors)
 inputFile.close()
 
 root = tk.CTk()
