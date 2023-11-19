@@ -140,17 +140,27 @@ def run():
     for widget in centroidsFrame.winfo_children():
         widget.destroy()
 
+    # opening output.csv
+    outputFile = open("output.csv", "w")
+
     # drawing the plot
     # plotting the centroids
     # for every cluster, gets the x and y values of feature vectors
     # plotting the vectors
+
+    # writing for output.txt
     for i in range(0, int(nClusters)):
         centroidLabel = tk.CTkLabel(centroidsFrame, text= "Centroid " + str(i), text_color="Cyan")
         centroidLabel.pack()
         tempXList = []
         tempYList = []
+
+        outputFile.write("Centroid " + str(i) + " (" + str(currentCentroids[i][0]) + ", " + str(currentCentroids[i][1]) + ")\n")
+
         for vector in vectorList:
             if i == vector[1]:
+                outputFile.write("[" + vector[0][attr1Index] + ", " + vector[0][attr2Index] + "]\n")
+
                 tempXList.append(float(vector[0][attr1Index]))
                 tempYList.append(float(vector[0][attr2Index]))
                 vectorString = "[" + vector[0][attr1Index] + "," + vector[0][attr2Index] + "]"
@@ -160,6 +170,8 @@ def run():
         ax.scatter(tempXList, tempYList)
         canvas.draw()
 
+    # closing the output.csv
+    outputFile.close()
 # reads the contents of wine.csv
 # gets the attribute list
 # gets the feature vectors
