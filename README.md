@@ -3,6 +3,7 @@
 - K-Means Clustering
 
   - Dependencies:
+    - python3 pip
     - Matplotlib
       - pip install matplotlib
         
